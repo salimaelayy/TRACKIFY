@@ -1,11 +1,28 @@
 const express = require('express')
-// const cookieParser= require('cookie-parser')
-// const cors=require('cors')
 const app = express()
+const cookieParser= require('cookie-parser')
+const cors=require('cors')
 
-app.use(express.json())
+const userRoutes = require('./Routes/userRoute');
+const authRoutes = require('./Routes/AuthRoutes');
+const expenseRoutes = require('./Routes/expenseRoute');
+const incomeRoutes = require('./Routes/incomeRoute');
+const categoryRoutes = require('./Routes/categoryRoute');
+
 require('dotenv').config()
 require('./connection')
+app.use(express.json())
+app.use(cookieParser()) 
+app.use(cors({credentials :true,origin :'http://localhost:5173'}));
+app.use(cors("*"));
+
+app.use('/api/user', userRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/expense', expenseRoutes);
+app.use('/api/income', incomeRoutes);
+app.use('/api/categories', categoryRoutes);
+
+
 
 app.listen(process.env.PORT, () => {
     console.log('listening on port:' + process.env.PORT)

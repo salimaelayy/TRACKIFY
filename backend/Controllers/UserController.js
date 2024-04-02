@@ -1,0 +1,169 @@
+const User = require('../Schemas/User');
+const bcrypt = require('bcrypt');
+const { CreateToken } = require('../MiddleWares/CreateToken');
+
+const register = async (req, res, next) => {
+  try {
+    const { username, password, email, country, fullname, birthdate } = req.body;
+
+    if (!username || !password || !email || !country || !fullname || !birthdate) {
+      return res.status(400).json({ message: 'Please provide valid information' });
+    }
+
+    // Hash the password
+    const hashPass = await bcrypt.hash(password, 10);
+
+    // Check if the user already exists
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(409).json({ message: 'User already exists' });
+    }
+
+    // Create a new user
+    const newUser = await User.create({
+      username,
+      email,
+      password: hashPass,
+      country,
+      fullname,
+      birthdate,
+    });
+
+    // Creating the access token
+    const accessToken = CreateToken(newUser);
+
+    // Putting the token in a cookie
+    res.cookie("access-token", accessToken, { maxAge: 90000, httpOnly: true });
+
+    // Send a success response
+    return res.status(201).json({ accessToken, id: newUser._id, data: newUser, message: 'New user created successfully' });
+  } catch (error) {
+    console.error('Error while registering user:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const readall = async (req, res, next) => {
+  try {
+    const users = await User.find();
+    return res.json({ data: users });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const readbyid = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+};
+
+const readbyname = async (req, res, next) => {
+  try {
+    const { username } = req.query;
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: 'No user found with the given username' });
+    }
+    return res.status(200).json({ user });
+  } catch (error) {
+    console.error('Error reading user by username:', error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+const updatebyid = async (req, res, next) => {
+  const userId = req.params.id;
+  try {
+    if (!req.body) { 
+      return res.status(400).json({ message: 'Request body is missing' });
+    }
+
+    const { username, email, country, fullname, birthdate } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.username = username || user.username;
+    user.email = email || user.email;
+    user.country = country || user.country;
+    user.fullname = fullname || user.fullname;
+    user.birthdate = birthdate || user.birthdate;
+
+    const updatedUser = await user.save();
+    return res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+};
+
+const deletebyid = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const deletedUser = await User.findByIdAndDelete(userId);
+    if (!deletedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    return res.json({ message: 'User is deleted successfully', data: deletedUser });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'An error occurred' });
+  }
+};
+
+const assignRole = async (req, res, next) => {
+  const { userId, roleId } = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    if (user.role.includes(roleId)) {
+      return res.status(400).json({ message: 'Role already assigned to user' });
+    }
+    user.role.push(roleId);
+    await user.save();
+    return res.status(200).json({ message: 'Role assigned successfully', user });
+  } catch (error) {
+    console.error('Error assigning role:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const removeRole = async (req, res) => {
+  const { userId, roleId } = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    if (!user.role.includes(roleId)) {
+      return res.status(400).json({ message: 'Role not assigned to user' });
+    }
+    user.role = user.role.filter(role => role !== roleId);
+    await user.save();
+    return res.status(200).json({ message: 'Role removed successfully', user });
+  } catch (error) {
+    console.error('Error removing role:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports = {
+  register,
+  readall,
+  readbyid,
+  readbyname,
+  updatebyid,
+  deletebyid
+};

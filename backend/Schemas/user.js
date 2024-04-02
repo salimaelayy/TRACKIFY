@@ -7,15 +7,31 @@ const userSchema = new Schema({
     required: true,
     unique: true
   },
+  fullname: {
+    type: String,
+    required: true,
+  },
+  birthdate: {
+    type: Date,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
     unique: true
   },
+  country: {
+    type: String,
+    required: true,
+  },
   password: {
     type: String,
     required: true
-  }
+  },
+  picture: {
+    type: String,
+    required: false
+  },
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports =  mongoose.model('User', userSchema);
