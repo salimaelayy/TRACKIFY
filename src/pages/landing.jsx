@@ -11,7 +11,7 @@ import Footer from '../components/Footer';
 
 const LandingPage = () => {
   return (
-    <div className="font-sans">
+    <div className=" font-sans">
     {/* Header */}
     <Header/>
     {/* Hero Section */}

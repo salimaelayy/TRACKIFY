@@ -7,7 +7,8 @@ const createIncome = async (req, res) => {
     const income = new Income({
       amount,
       date,
-      description
+      description,
+      category
     });
 
     await income.save();

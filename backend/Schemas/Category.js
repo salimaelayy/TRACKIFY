@@ -10,10 +10,6 @@ const categorySchema = new mongoose.Schema({
     type: String,
     enum: ['expense', 'income'],
     required: true
-  },
-  image: {
-    type: String,
-    required: true
   }
 });
 module.exports =  mongoose.model('Category', categorySchema);

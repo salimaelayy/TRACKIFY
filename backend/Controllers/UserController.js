@@ -1,4 +1,5 @@
 const User = require('../Schemas/User');
+const cloudinary = require('../utils/cloudinary');
 const bcrypt = require('bcrypt');
 const { CreateToken } = require('../MiddleWares/CreateToken');
 
@@ -9,6 +10,9 @@ const register = async (req, res, next) => {
     if (!username || !password || !email || !country || !fullname || !birthdate) {
       return res.status(400).json({ message: 'Please provide valid information' });
     }
+
+    // Upload the image to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path);
 
     // Hash the password
     const hashPass = await bcrypt.hash(password, 10);
@@ -27,15 +31,13 @@ const register = async (req, res, next) => {
       country,
       fullname,
       birthdate,
+      picture: result.secure_url, 
     });
 
-    // Creating the access token
     const accessToken = CreateToken(newUser);
 
-    // Putting the token in a cookie
     res.cookie("access-token", accessToken, { maxAge: 90000, httpOnly: true });
 
-    // Send a success response
     return res.status(201).json({ accessToken, id: newUser._id, data: newUser, message: 'New user created successfully' });
   } catch (error) {
     console.error('Error while registering user:', error);
@@ -99,6 +101,12 @@ const updatebyid = async (req, res, next) => {
     user.fullname = fullname || user.fullname;
     user.birthdate = birthdate || user.birthdate;
 
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path);
+
+      user.picture = result.secure_url;
+    }
+
     const updatedUser = await user.save();
     return res.status(200).json({ message: 'User updated successfully', user: updatedUser });
   } catch (error) {
@@ -106,6 +114,38 @@ const updatebyid = async (req, res, next) => {
     return res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
 };
+
+const changePassword = async (req, res, next) => {
+  const { oldPassword, newPassword } = req.body;
+  const userId = req.params.id;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Verify the old password
+    const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(401).json({ message: 'Incorrect old password' });
+    }
+
+    // Hash the new password
+    const hashNewPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password
+    user.password = hashNewPassword;
+    await user.save();
+
+    return res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 
 const deletebyid = async (req, res, next) => {
   try {
@@ -121,49 +161,12 @@ const deletebyid = async (req, res, next) => {
   }
 };
 
-const assignRole = async (req, res, next) => {
-  const { userId, roleId } = req.body;
-  try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    if (user.role.includes(roleId)) {
-      return res.status(400).json({ message: 'Role already assigned to user' });
-    }
-    user.role.push(roleId);
-    await user.save();
-    return res.status(200).json({ message: 'Role assigned successfully', user });
-  } catch (error) {
-    console.error('Error assigning role:', error);
-    return res.status(500).json({ message: 'Internal server error' });
-  }
-};
-
-const removeRole = async (req, res) => {
-  const { userId, roleId } = req.body;
-  try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    if (!user.role.includes(roleId)) {
-      return res.status(400).json({ message: 'Role not assigned to user' });
-    }
-    user.role = user.role.filter(role => role !== roleId);
-    await user.save();
-    return res.status(200).json({ message: 'Role removed successfully', user });
-  } catch (error) {
-    console.error('Error removing role:', error);
-    return res.status(500).json({ message: 'Internal server error' });
-  }
-};
-
 module.exports = {
   register,
   readall,
   readbyid,
   readbyname,
   updatebyid,
-  deletebyid
+  deletebyid,
+  changePassword
 };
