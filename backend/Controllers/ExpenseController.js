@@ -1,14 +1,35 @@
 const Expense = require('../Schemas/Expense')
+const Category = require('../Schemas/Category');
+// const User = require('../Schemas/user');
+
+
 
 const createExpense = async (req, res) => {
   try {
-    const { amount, date, description, categoryId } = req.body;
+    // const userId =req.params._id
+    const { amount, date, description, account, categoryId} = req.body;
 
+    // Check if categoryId is provided
+    if (!categoryId) {
+      return res.status(400).json({ msg: 'Category ID is required' });
+    }
+
+    // Check if the category exists
+    
+    // const user = await User.findById(userId);
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return res.status(404).json({ msg: 'Category not found' });
+    }
+
+    // Create the expense
     const expense = new Expense({
       amount,
       date,
+      account,
       description,
-      category: categoryId
+      category: category._id,
+      // createdBy:user._id
     });
 
     await expense.save();
@@ -68,12 +89,13 @@ const getExpenseByName = async (req, res) => {
 const updateExpense = async (req, res) => {
   try {
     const id = req.params.id;
-    const { amount, date, description, categoryId } = req.body;
+    const { amount, date, description, account,categoryId } = req.body;
 
     const expense = await Expense.findByIdAndUpdate(id, {
       amount,
       date,
       description,
+      account,
       category: categoryId
     });
 

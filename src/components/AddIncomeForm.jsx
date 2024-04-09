@@ -1,29 +1,44 @@
 import React, { useState } from 'react';
-import { MdOutlineAdd } from "react-icons/md";
+import { MdOutlineAdd, MdOutlineClose } from "react-icons/md";
+import { useDispatch, useSelector } from 'react-redux';
 import IconSelector from './IconSelector';
+import { addIncomeAsync } from '../redux/slices/incomeSlice/incomeThunk';
 
-const AddIncomeForm = () => {
+const AddIncomeForm = ({onClose}) => {
+  
+  const dispatch = useDispatch();
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
   const [account, setAccount] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
 
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add logic to save income
-    console.log('Income saved:', { amount, category, account, description, date });
-    // Reset form fields
-    setAmount('');
-    setCategory('');
-    setAccount('');
-    setDescription('');
-    setDate('');
+    // Check if category is selected
+    if (!category) {
+      alert('Please select a category');
+      return;
+    }
+    // Add categoryId to the expense object
+    const incomeData = { amount, date, description, categoryId: category, account };
+    try {
+      dispatch(addIncomeAsync(incomeData));
+      setAmount('');
+      setCategory('');
+      setAccount('');
+      setDescription('');
+      setDate('');
+      onClose();
+    } catch (error) {
+      console.error('Failed to add income:', error);
+    }
   };
-
   return (
     <div className="w-5/12 rounded-md max-w-5xl mx-auto bg-white shadow-lg border border-zinc-100 mt-4 p-4">
-      <form onSubmit={handleSubmit}>
+      <button className='float-right text-3xl block text-secondary' onClick={onClose}><MdOutlineClose/></button>
+      <form onSubmit={handleSubmit} >
         <div className="mt-4 text-sm text-teal-800 font-light text-center">New Income</div>
         <div className="flex items-center justify-center mb-4">
           <div className="font-bold flex items-center">
@@ -48,9 +63,9 @@ const AddIncomeForm = () => {
           <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
           <select id="category" value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
             <option value="">Select Category</option>
-            <option value="salary">Salary</option>
-            <option value="freelance">Freelance Work</option>
-            <option value="investment">Investment</option>
+            <option value="660c02f2ae0c2fcb1121ba28">Salary</option>
+            <option value="660c02f2ae0c2fcb1121ba28">Freelance Work</option>
+            <option value="660c02f2ae0c2fcb1121ba28">Investment</option>
           </select>
         </div>
         <div className="mb-4">

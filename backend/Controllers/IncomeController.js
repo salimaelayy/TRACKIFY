@@ -1,14 +1,25 @@
 const Income = require('../Schemas/Income');
+const Category= require("../Schemas/Category")
 
 const createIncome = async (req, res) => {
   try {
-    const { amount, date, description } = req.body;
+    const { amount, date, description,account, categoryId } = req.body;
+    if (!categoryId) {
+      return res.status(400).json({ msg: 'Category ID is required' });
+    }
+
+    // Check if the category exists
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return res.status(404).json({ msg: 'Category not found' });
+    }
 
     const income = new Income({
       amount,
       date,
       description,
-      category
+      account,
+      category: category._id,
     });
 
     await income.save();
