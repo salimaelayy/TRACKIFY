@@ -31,12 +31,20 @@
 import React, { useState } from 'react';
 import {MdModeEdit} from 'react-icons/md'
 import Profile from "../assets/profile.jpg"
+import {  useDispatch } from 'react-redux';
+import { setImgaeProfile } from '../redux/slices/userSlice/userSlice';
 
 const ImageUpload = (handleEditClick) => {
   const [image, setImage] = useState(Profile);
+  const dispatch = useDispatch()
 
   const handleUpload = (e) => {
     const file = e.target.files[0];
+
+
+    dispatch(setImgaeProfile(file))
+
+
     const reader = new FileReader();
     reader.onloadend = () => {
       setImage(reader.result);

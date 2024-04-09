@@ -4,12 +4,13 @@ import ImageUpload from './UploadImage';
 import Profile from "../assets/profile.jpg"
 import ReactLoading from 'react-loading';
 
-import { getUsersAsync, editUserAsync } from '../redux/slices/userSlice/userThunk';
+import { getUsersAsync,  } from '../redux/slices/userSlice/userThunk';
+import axios from 'axios';
 
 const ProfileSettings = () => {
     const dispatch = useDispatch();
     const userId = '660ac6c330b6e0b38c6be7bc';
-    const { users, loading, error } = useSelector((state) => state.users);
+    const { users, loading, error,image } = useSelector((state) => state.users);
     // const user=users.user;
     const [editMode, setEditMode] = useState(false);
 
@@ -46,9 +47,20 @@ const ProfileSettings = () => {
         setEditMode(true);
     };
 
-    const handleSaveClick = () => {
-        dispatch(editUserAsync({ id: userId, ...editUserData }));
-        setEditMode(false);
+    const handleSaveClick = async () => {
+
+        const formData = new FormData()
+
+        formData.append("image",image)
+        formData.append("username",editUserData.username)
+        formData.append("country",editUserData.country)
+        formData.append("email",editUserData.email)
+        formData.append("fullname",editUserData.fullname)
+        formData.append("birthdate",editUserData.birthdate)
+
+        await axios.put(`http://localhost:3008/api/user/${userId}`, formData); 
+               setEditMode(false);
+
         setEditUserData({
             username: users.user.username || '',
             fullname: users.user.fullname || '',
@@ -62,6 +74,7 @@ const ProfileSettings = () => {
         
     };
     const handleImageChange = (image) => {
+        console.log(image)
         setEditUserData({
           ...editUserData,
           picture: image,

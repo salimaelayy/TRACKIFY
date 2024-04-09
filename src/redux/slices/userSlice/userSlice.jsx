@@ -6,12 +6,16 @@ const initialState = {
   users: [],
   loading: false,
   error: null,
+  image:null
 };
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    setImgaeProfile:(state,action)=>{
+      state.image = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -84,5 +88,7 @@ const userSlice = createSlice({
       });
   },
 });
+
+export const {setImgaeProfile} = userSlice.actions
 
 export const { reducer: userReducer, actions: userActions } = userSlice;

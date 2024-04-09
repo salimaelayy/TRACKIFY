@@ -1,14 +1,24 @@
-const User = require('../Schemas/User');
-const cloudinary = require('../utils/cloudinary');
-const bcrypt = require('bcrypt');
-const { CreateToken } = require('../MiddleWares/CreateToken');
+const User = require("../Schemas/User");
+const cloudinary = require("../utils/cloudinary");
+const bcrypt = require("bcrypt");
+const { CreateToken } = require("../MiddleWares/CreateToken");
 
 const register = async (req, res, next) => {
   try {
-    const { username, password, email, country, fullname, birthdate } = req.body;
+    const { username, password, email, country, fullname, birthdate } =
+      req.body;
 
-    if (!username || !password || !email || !country || !fullname || !birthdate) {
-      return res.status(400).json({ message: 'Please provide valid information' });
+    if (
+      !username ||
+      !password ||
+      !email ||
+      !country ||
+      !fullname ||
+      !birthdate
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Please provide valid information" });
     }
 
     // Upload the image to Cloudinary
@@ -20,7 +30,7 @@ const register = async (req, res, next) => {
     // Check if the user already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return res.status(409).json({ message: 'User already exists' });
+      return res.status(409).json({ message: "User already exists" });
     }
 
     // Create a new user
@@ -31,17 +41,22 @@ const register = async (req, res, next) => {
       country,
       fullname,
       birthdate,
-      picture: result.secure_url, 
+      picture: result.secure_url,
     });
 
     const accessToken = CreateToken(newUser);
 
     res.cookie("access-token", accessToken, { maxAge: 90000, httpOnly: true });
 
-    return res.status(201).json({ accessToken, id: newUser._id, data: newUser, message: 'New user created successfully' });
+    return res.status(201).json({
+      accessToken,
+      id: newUser._id,
+      data: newUser,
+      message: "New user created successfully",
+    });
   } catch (error) {
-    console.error('Error while registering user:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    console.error("Error while registering user:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -58,12 +73,12 @@ const readbyid = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
-    return res.status(200).json({user});
+    return res.status(200).json({ user });
   } catch (error) {
     console.error(error);
-    return res.status(500).send('Internal Server Error');
+    return res.status(500).send("Internal Server Error");
   }
 };
 
@@ -72,27 +87,30 @@ const readbyname = async (req, res, next) => {
     const { username } = req.query;
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(404).json({ message: 'No user found with the given username' });
+      return res
+        .status(404)
+        .json({ message: "No user found with the given username" });
     }
     return res.status(200).json({ user });
   } catch (error) {
-    console.error('Error reading user by username:', error);
-    return res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Error reading user by username:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-const updatebyid = async (req, res, next) => {
+const updatebyid = async (req, res) => {
   const userId = req.params.id;
+  console.log(req.file);
   try {
-    if (!req.body) { 
-      return res.status(400).json({ message: 'Request body is missing' });
+    if (!req.body) {
+      return res.status(400).json({ message: "Request body is missing" });
     }
 
     const { username, email, country, fullname, birthdate } = req.body;
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     user.username = username || user.username;
@@ -108,10 +126,14 @@ const updatebyid = async (req, res, next) => {
     }
 
     const updatedUser = await user.save();
-    return res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+    return res
+      .status(200)
+      .json({ message: "User updated successfully", user: updatedUser });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 
@@ -123,13 +145,13 @@ const changePassword = async (req, res, next) => {
     // Find the user by ID
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Verify the old password
     const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
     if (!isPasswordCorrect) {
-      return res.status(401).json({ message: 'Incorrect old password' });
+      return res.status(401).json({ message: "Incorrect old password" });
     }
 
     // Hash the new password
@@ -139,25 +161,27 @@ const changePassword = async (req, res, next) => {
     user.password = hashNewPassword;
     await user.save();
 
-    return res.status(200).json({ message: 'Password updated successfully' });
+    return res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 const deletebyid = async (req, res, next) => {
   try {
     const userId = req.params.id;
     const deletedUser = await User.findByIdAndDelete(userId);
     if (!deletedUser) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
-    return res.json({ message: 'User is deleted successfully', data: deletedUser });
+    return res.json({
+      message: "User is deleted successfully",
+      data: deletedUser,
+    });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'An error occurred' });
+    return res.status(500).json({ error: "An error occurred" });
   }
 };
 
@@ -168,5 +192,5 @@ module.exports = {
   readbyname,
   updatebyid,
   deletebyid,
-  changePassword
+  changePassword,
 };

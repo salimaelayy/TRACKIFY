@@ -41,7 +41,9 @@ export const getUsersAsync = createAsyncThunk(
 export const editUserAsync = createAsyncThunk(
   'user/editUser',
   async ({ id, ...userData }) => {
+    console.log(`http://localhost:3008/api/user/${id}`)
     try {
+      console.log(id,userData)
       const response = await axios.put(`http://localhost:3008/api/user/${id}`, userData);
       return response.data;
     } catch (error) {
