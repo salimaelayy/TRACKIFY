@@ -147,10 +147,12 @@ const changePassword = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
+    console.log(user.password)
+    console.log(oldPassword)
     // Verify the old password
     const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
     if (!isPasswordCorrect) {
+      console.error('Incorrect old password');
       return res.status(401).json({ message: "Incorrect old password" });
     }
 
@@ -167,6 +169,7 @@ const changePassword = async (req, res, next) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 const deletebyid = async (req, res, next) => {
   try {

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUsersAsync, getUsersAsync, addUserAsync, editUserAsync, deleteUserAsync } from '../userSlice/userThunk';
+import { fetchUsersAsync, changePasswordAsync,getUserAsync, addUserAsync, editUserAsync, deleteUserAsync } from '../userSlice/userThunk';
 
 
 const initialState = {
@@ -19,7 +19,7 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUsersAsync.pending, (state) => {
+     .addCase(fetchUsersAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
@@ -31,16 +31,15 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
-      .addCase(getUsersAsync.pending, (state) => {
+      .addCase(getUserAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getUsersAsync.fulfilled, (state, action) => {
+      .addCase(getUserAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.users = action.payload;
       })
-      .addCase(getUsersAsync.rejected, (state, action) => {
+      .addCase(getUserAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -83,6 +82,18 @@ const userSlice = createSlice({
         state.loading = false;
       })
       .addCase(deleteUserAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(changePasswordAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(changePasswordAsync.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(changePasswordAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

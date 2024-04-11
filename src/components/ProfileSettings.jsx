@@ -4,13 +4,13 @@ import ImageUpload from './UploadImage';
 import Profile from "../assets/profile.jpg"
 import ReactLoading from 'react-loading';
 
-import { getUsersAsync,  } from '../redux/slices/userSlice/userThunk';
+import { getUserAsync,  } from '../redux/slices/userSlice/userThunk';
 import axios from 'axios';
 
 const ProfileSettings = () => {
     const dispatch = useDispatch();
     const userId = '660ac6c330b6e0b38c6be7bc';
-    const { users, loading, error,image } = useSelector((state) => state.users);
+    const { users, loading, error, image } = useSelector((state) => state.users);
     // const user=users.user;
     const [editMode, setEditMode] = useState(false);
 
@@ -27,7 +27,7 @@ const ProfileSettings = () => {
     const formattedBirthdate = editUserData.birthdate ? new Date(editUserData.birthdate).toISOString().split('T')[0] : '';
 
     useEffect(() => {
-        dispatch(getUsersAsync({ id: userId }));
+        dispatch(getUserAsync({ id: userId }));
     }, [dispatch]);
     
     useEffect(() => {

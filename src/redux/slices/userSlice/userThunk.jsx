@@ -1,6 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+
+
 export const fetchUsersAsync = createAsyncThunk(
   'user/fetchUsers',
   async () => {
@@ -26,7 +28,7 @@ export const addUserAsync = createAsyncThunk(
 );
 
 
-export const getUsersAsync = createAsyncThunk(
+export const getUserAsync = createAsyncThunk(
   'user/getUser',
   async ({ id}) => {
     try {
@@ -45,6 +47,18 @@ export const editUserAsync = createAsyncThunk(
     try {
       console.log(id,userData)
       const response = await axios.put(`http://localhost:3008/api/user/${id}`, userData);
+      return response.data;
+    } catch (error) {
+      throw error.response.data.message;
+    }
+  }
+);
+//password change
+export const changePasswordAsync = createAsyncThunk(
+  'user/changePassword',
+  async ({ userId, oldPassword, newPassword }) => {
+    try {
+      const response = await axios.put(`http://localhost:3008/api/user/newpassword/${userId}`, { oldPassword, newPassword });
       return response.data;
     } catch (error) {
       throw error.response.data.message;

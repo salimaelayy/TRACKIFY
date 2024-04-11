@@ -15,7 +15,6 @@ const categoryRoutes = require('./Routes/categoryRoute');
 require('dotenv').config()
 app.use(express.json())
 app.use(cookieParser()) 
-app.use(cors({credentials :true,origin :'http://localhost:5173'}));
 app.use(cors("*"));
 
 app.use('/api/user', userRoutes);
