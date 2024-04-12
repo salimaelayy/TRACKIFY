@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchexpensesAsync, getexpenseAsync, addexpenseAsync, editexpenseAsync, deleteexpenseAsync } from '../expenseSlice/expenseThunk';
+import { fetchexpensesAsync, getexpenseAsync, addexpenseAsync, editExpenseAsync, deleteexpenseAsync } from '../expenseSlice/expenseThunk';
 
 const initialState = {
   expenses: [],
   loading: false,
+  currentexpenses: null,
   error: null,
 };
 
@@ -32,7 +33,7 @@ const expenseSlice = createSlice({
       })
       .addCase(getexpenseAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.expenses = action.payload;
+        state.currentexpenses = action.payload;
       })
       .addCase(getexpenseAsync.rejected, (state, action) => {
         state.loading = false;
@@ -44,25 +45,27 @@ const expenseSlice = createSlice({
       })
       .addCase(addexpenseAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.expenses.push(action.payload);
+        state.currentExpense.push(action.payload);
       })
       .addCase(addexpenseAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(editexpenseAsync.pending, (state) => {
+      .addCase(editExpenseAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(editexpenseAsync.fulfilled, (state, action) => {
-        const { id, amount, date, description } = action.payload;
-        const index = state.expenses.findIndex((expense) => expense.id === id);
-        if (index !== -1) {
-          state.expenses[index] = { id, amount, date, description };
-        }
+      .addCase(editExpenseAsync.fulfilled, (state, action) => {
+        const editedExpense = action.payload;
         state.loading = false;
+        const index = state.expenses.findIndex((expense) => expense.id === editedExpense.id);
+        if (index !== -1) {
+          // Update the expense at the found index
+          state.expenses[index] = editedExpense;
+        }
       })
-      .addCase(editexpenseAsync.rejected, (state, action) => {
+      
+      .addCase(editExpenseAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

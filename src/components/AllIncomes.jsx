@@ -132,7 +132,7 @@ const AllIncomes = () => {
               </thead>
               <tbody className="text-sm divide-y divide-zinc-100">
               {currentItems.map((income) => (
-                <tr key={income.id} >
+                <tr key={income._id} >
                   <td className="p-2 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="w-10 h-10 shadow-md bg-teal-800 rounded-full flex items-center justify-center">< MdOutlineHouse className='h-6 w-6 text-gray-100' /></div>

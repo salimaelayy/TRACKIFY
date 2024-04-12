@@ -30,6 +30,7 @@ const userSchema = new Schema({
   },
   picture: {
     type: String,
+    default: 'https://res.cloudinary.com/dpgarq5ka/image/upload/v1712759256/ikxhlfl41pzeydreevok.png',
     required: false
   },
 });

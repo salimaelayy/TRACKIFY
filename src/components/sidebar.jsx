@@ -1,9 +1,19 @@
 import React from 'react';
 import { MdMoreVert } from "react-icons/md";
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthProvider';
 
 const Sidebar = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
   return (
+    
     <div className="w-64 h-screen px-7 justify-center  bg-teal-800 flex-col ">
       <div className="flex-col flex">
         <div className="w-56 text-center font-extrabold text-2xl py-6 text-white"><span>FINE</span><span>bank.</span><span>IO</span></div>
@@ -41,11 +51,11 @@ const Sidebar = () => {
           <div className="w-6 h-6 justify-start items-center gap-3 flex">
             <div className="w-5 h-5 relative" />
           </div>
-          <div className="w-32 h-6 hover:text-teal-800 hover:font-bold  text-amber-50 text-base font-normal font-['Inter'] leading-normal">Logout</div>
+          <div className="w-32 h-6 hover:text-teal-800 hover:font-bold  text-amber-50 text-base font-normal font-['Inter'] leading-normal"><Link onClick={handleLogout}>Logout</Link></div>
         </div>
         <div className="py-8 border-t fixed bottom-0  border-white border-opacity-10 justify-start items-center gap-8 inline-flex">
           <div className="justify-start items-center gap-4 flex">
-            <img className="w-8 h-8 rounded-full" src="https://via.placeholder.com/32x32" />
+            <img className="w-8 h-8 rounded-full" src="https://via.placeholder.com/32x32" /> 
             <Link to="settings">
             <div className="flex-col justify-start items-start inline-flex">
               <div className="w-30 text-amber-50 text-base font-normal font-['Inter'] leading-normal">Tanzir Rahman</div>

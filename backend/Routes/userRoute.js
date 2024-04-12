@@ -4,7 +4,7 @@ const router = express.Router();
 const userController = require("../Controllers/UserController");
 const upload = require("../MiddleWares/Multer");
 
-router.post("/", upload.single("image"), userController.register);
+router.post("/", userController.register);
 
 router.get("/", userController.readall);
 

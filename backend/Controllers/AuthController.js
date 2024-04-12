@@ -17,7 +17,7 @@ const login = async (req, res, next) => {
     // Verify if the user exists
     if (!userLoggedIn) {
       console.log('User does not exist');
-      return res.status(404).json('User does not exist');
+      return res.status(404).json({ message: 'User does not exist' });
     }
 
     // Compare the provided password with the hashed password from the database
@@ -25,7 +25,7 @@ const login = async (req, res, next) => {
 
     // Verify if passwords match
     if (!match) {
-      return res.status(400).json('Username or password is incorrect');
+      return res.status(400).json({ message: 'Username or password is incorrect' });
     }
 
     // Creating the access token
@@ -35,12 +35,13 @@ const login = async (req, res, next) => {
     res.cookie("access-token", accessToken, { maxAge: 100000, httpOnly: true,sameSite : 'lax',secure: false });
 
     // Send a success response
-    return res.json({  id: userLoggedIn._id,accessToken });
+    return res.json({  id: userLoggedIn._id, accessToken });
   } catch (error) {
     console.error('Error during login:', error);
-    return res.status(500).json({ error: error.message, message: 'Error during login' });
+    return res.status(500).json({ message: 'Error during login' });
   }
 }
+
 const profile = async (req, res, next) => {
   console.log('you are in the profile');
   return res.json('profile');

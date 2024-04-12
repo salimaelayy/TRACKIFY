@@ -25,7 +25,7 @@ export const addexpenseAsync = createAsyncThunk(
   }
 );
 
-export const editexpenseAsync = createAsyncThunk(
+export const editExpenseAsync = createAsyncThunk(
   'expense/editexpense',
   async ({ id, ...expenseData }) => {
     try {

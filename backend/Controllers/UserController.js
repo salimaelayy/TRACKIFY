@@ -21,9 +21,6 @@ const register = async (req, res, next) => {
         .json({ message: "Please provide valid information" });
     }
 
-    // Upload the image to Cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path);
-
     // Hash the password
     const hashPass = await bcrypt.hash(password, 10);
 
@@ -40,8 +37,7 @@ const register = async (req, res, next) => {
       password: hashPass,
       country,
       fullname,
-      birthdate,
-      picture: result.secure_url,
+      birthdate
     });
 
     const accessToken = CreateToken(newUser);
