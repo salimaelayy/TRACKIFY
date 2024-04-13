@@ -11,26 +11,26 @@ import Footer from '../components/Footer';
 
 const LandingPage = () => {
   return (
-    <div className=" font-sans">
-    {/* Header */}
-    <Header/>
-    {/* Hero Section */}
-    <Hero/>
-    {/* Testimonials Section */}
-    <Testimonials/>
-    {/* Key Features Section */}
-    <KeyFeatures/>
-    {/* slider Section */}
-    <ScreenshotSlider/>
-    {/* Download Section */}
-    <Download/>
-    {/* Blog Posts Section */}
-    <Blog/>
-    {/*help center section */}
-    <HelpCenter/>
-    {/* Footer */}
-    <Footer/>
-  </div>
+    <div className="font-sans scrollbar-thin scrollbar-thumb-accent scrollbar-track-rose-950 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+      {/* Header */}
+      <Header />
+      {/* Hero Section */}
+      <Hero />
+      {/* Testimonials Section */}
+      <Testimonials />
+      {/* Key Features Section */}
+      <KeyFeatures />
+      {/* slider Section */}
+      <ScreenshotSlider />
+      {/* Download Section */}
+      <Download />
+      {/* Blog Posts Section */}
+      <Blog />
+      {/*help center section */}
+      <HelpCenter />
+      {/* Footer */}
+      <Footer />
+    </div>
   );
 }
 

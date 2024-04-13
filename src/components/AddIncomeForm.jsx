@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MdOutlineAdd, MdOutlineClose } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
-import IconSelector from './IconSelector';
+import { toast } from 'react-toastify';
 import { addIncomeAsync } from '../redux/slices/incomeSlice/incomeThunk';
 
 const AddIncomeForm = ({onClose}) => {
@@ -25,6 +25,7 @@ const AddIncomeForm = ({onClose}) => {
     const incomeData = { amount, date, description, categoryId: category, account };
     try {
       dispatch(addIncomeAsync(incomeData));
+      toast.success('Income added successfully');
       setAmount('');
       setCategory('');
       setAccount('');
@@ -33,6 +34,7 @@ const AddIncomeForm = ({onClose}) => {
       onClose();
     } catch (error) {
       console.error('Failed to add income:', error);
+      toast.error('Failed to add income. Please try again.');
     }
   };
   return (

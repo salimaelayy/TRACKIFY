@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import ImageUpload from './UploadImage';
 import Profile from "../assets/profile.jpg"
 import ReactLoading from 'react-loading';
-
+import { jwtDecode } from "jwt-decode";
 import { getUserAsync,  } from '../redux/slices/userSlice/userThunk';
 import axios from 'axios';
 
@@ -27,7 +27,7 @@ const ProfileSettings = () => {
     const formattedBirthdate = editUserData.birthdate ? new Date(editUserData.birthdate).toISOString().split('T')[0] : '';
 
     useEffect(() => {
-        dispatch(getUserAsync({ id: userId }));
+        dispatch(getUserAsync({ id: getUserIdFromToken() }));
     }, [dispatch]);
     
     useEffect(() => {
@@ -58,7 +58,7 @@ const ProfileSettings = () => {
         formData.append("fullname",editUserData.fullname)
         formData.append("birthdate",editUserData.birthdate)
 
-        await axios.put(`http://localhost:3008/api/user/${userId}`, formData); 
+        await axios.put(`http://localhost:3008/api/user/${  getUserIdFromToken()}`, formData); 
                setEditMode(false);
 
         setEditUserData({
@@ -70,8 +70,23 @@ const ProfileSettings = () => {
             country: users.user.country || '',
             picture:users.user.picture || Profile
         });
-        dispatch(getUsersAsync({ id: userId }));
+        dispatch(getUserAsync({ id: getUserIdFromToken() }));
         
+    };
+    
+    const getUserIdFromToken = () => {
+        const token = getCookie('access-token');
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            return decodedToken.userId;
+        }
+        return null;
+    };
+
+    const getCookie = (name) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
     };
     const handleImageChange = (image) => {
         console.log(image)

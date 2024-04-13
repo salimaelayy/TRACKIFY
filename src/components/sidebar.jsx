@@ -1,6 +1,7 @@
 import React from 'react';
 import { MdMoreVert } from "react-icons/md";
 import { Link } from 'react-router-dom';
+import logo from '../assets/Trackify-dark.png'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthProvider';
 
@@ -15,24 +16,26 @@ const Sidebar = () => {
   return (
     
     <div className="w-64 h-screen px-7 justify-center  bg-teal-800 flex-col ">
+      <div className="my-2 flex items-center justify-center">
+        <img src={logo} alt="Logo" className="w-40" />
+      </div>
       <div className="flex-col flex">
-        <div className="w-56 text-center font-extrabold text-2xl py-6 text-white"><span>FINE</span><span>bank.</span><span>IO</span></div>
         <div className="flex-col justify-start items-start gap-4 flex">
-          <div className="px-4 py-3  bg-orange-300 rounded justify-start items-center gap-3 inline-flex">
+          <div className="px-4 py-3  bg-accent rounded justify-start items-center gap-3 inline-flex">
             <div className="w-6 h-6 relative" />
-            <Link to="/dashboard" className="w-32 h-6 font-medium hover:bg-orange-300 hover:bg-opacity-65 text-teal-800 text-base  font-['Inter'] leading-normal">Overview</Link>
+            <Link to="/dashboard" className="w-32 h-6 font-medium hover:bg-accent hover:bg-opacity-65 text-teal-800 text-base  font-['Inter'] leading-normal">Overview</Link>
           </div>
          
-          <div className="px-4 py-3 hover:bg-orange-300 hover:bg-opacity-65 rounded justify-start items-center gap-3 inline-flex">
+          <div className="px-4 py-3 hover:bg-accent hover:bg-opacity-65 rounded justify-start items-center gap-3 inline-flex">
             <div className="w-6 h-6 relative" />
             <Link to="expenses" className="w-32 h-6   text-white text-opacity-70 text-base font-normal font-['Inter'] leading-normal">Expenses</Link>
           </div>
-          <div className="px-4 py-3 hover:bg-orange-300 hover:bg-opacity-65 rounded justify-start items-center gap-3 inline-flex">
+          <div className="px-4 py-3 hover:bg-accent hover:bg-opacity-65 rounded justify-start items-center gap-3 inline-flex">
             <div className="w-6 h-6 p-0.5 justify-center items-center flex" />
             <Link to="incomes" className="w-32 h-6   text-white text-opacity-70 text-base font-normal font-['Inter'] leading-normal">Incomes</Link>
           </div>
 
-          <div className="px-4 py-3 hover:bg-orange-300 hover:bg-opacity-65 rounded justify-start items-center gap-3 inline-flex">
+          <div className="px-4 py-3 hover:bg-accent hover:bg-opacity-65 rounded justify-start items-center gap-3 inline-flex">
             <div className="w-6 h-6 px-0.5 py-1 justify-center items-center flex">
               <div className="w-5 h-4 relative">
               </div>
@@ -40,7 +43,7 @@ const Sidebar = () => {
             <Link to="transactions" className="w-32 h-6   text-white text-opacity-70 text-base font-normal font-['Inter'] leading-normal">Budget</Link>
           </div>
          
-          <div className="px-4 py-3 hover:bg-orange-300 hover:bg-opacity-65 rounded justify-start items-center gap-3 inline-flex">
+          <div className="px-4 py-3 hover:bg-accent hover:bg-opacity-65 rounded justify-start items-center gap-3 inline-flex">
             <div className="w-6 h-6 relative" />
             <Link to="settings" className="w-32 h-6   text-white text-opacity-70 text-base font-normal font-['Inter'] leading-normal">Settings</Link>
           </div>

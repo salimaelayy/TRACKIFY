@@ -7,10 +7,12 @@ import { useAuth } from './AuthProvider';
 const PrivateRoute = ({ element }) => {
   const [cookies] = useCookies(['access-token']);
   const isAuthenticated = !!cookies['access-token'];
+  const { user } = useAuth();
 
   return isAuthenticated ? (
     <>
       {element}
+      
     </>
   ) : (
     <Navigate to="/login" replace />

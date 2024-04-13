@@ -10,14 +10,14 @@ function HelpCenter() {
     };
 
     return (
-        <div className="container mx-auto px-4 sm:px-8 max-w-3xl">
-            <div className="main-title my-8">
-                <h1 className="font-bold text-2xl text-center">How can we help you?</h1>
+        <div className='bg-background py-8'><div className="container  mx-auto px-4 sm:px-8 max-w-3xl">
+            <div className="main-title ">
+                <h1 className="font-bold text-2xl my-6 text-center">How can we help you?</h1>
             </div>
 
-            <div className="main-search mb-8 rounded-lg shadow-lg px-6 py-3 w-full flex items-center space-x-6 border border-gray-200 border-opacity-75">
-                <button className="focus:outline-none" onClick={() => document.getElementById('search').focus()}>
-                    <svg className="w-6 h-6 text-gray-500" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="main-search mb-8 rounded-lg shadow-lg px-6 py-3 w-full flex items-center space-x-6 border border-primary border-opacity-75">
+                <button className="focus:outline-none  placeholder-secondary" onClick={() => document.getElementById('search').focus()}>
+                    <svg className="w-6 h-6 text-secondary" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                         <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </button>
@@ -54,7 +54,8 @@ function HelpCenter() {
                     ))}
                 </div>
             </div>
-        </div>
+        </div></div>
+        
     );
 }
 

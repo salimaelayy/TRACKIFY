@@ -11,7 +11,7 @@ const DashboardSearch = () => {
   return (
     <div className="w-full h-12 pl-4 pb-2 border-b pr-6  border-secondary flex justify-between items-center">
       <div className="flex gap-4 items-center">
-        <div className="text-zinc-900 text-xl font-bold font-['Inter']">Hello Tanzir</div>
+        <div className="text-primary text-xl font-bold font-['Inter']">Hello Tanzir</div>
         <div className="flex gap-1 items-center">
           <div className="w-4 h-4 bg-accent rounded-full" />
           <div className="text-sm text-neutral-400 font-normal font-['Inter']">{currentDate}</div>

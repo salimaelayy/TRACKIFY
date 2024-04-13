@@ -1,9 +1,7 @@
 // AllExpenses.jsx
 import React, { useEffect, useState } from 'react';
-import { MdOutlineHouse } from "react-icons/md";
-import { MdOutlineAdd } from "react-icons/md";
+import { MdOutlineEdit, MdOutlineHouse ,MdOutlineAdd, MdOutlineDeleteOutline} from "react-icons/md";
 import { Link } from 'react-router-dom';
-import { CiEdit } from "react-icons/ci";
 import AddExpenseForm from './AddEpenseForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchexpensesAsync } from '../redux/slices/expenseSlice/expenseThunk';
@@ -33,9 +31,11 @@ const AllExpenses = () => {
     setEditExpense(expense);
     setIsFormVisible(true);
   };
-  
 
-
+  const handleAddExpense = () => {
+    setEditExpense(null); // Reset editExpense state
+    setIsFormVisible(true);
+  };
 
   return (
     
@@ -43,7 +43,7 @@ const AllExpenses = () => {
       <div className="w-full flex justify-between px-4 py-2 ">
         {currentItems.map((expense) => (
           <div key={expense._id} className="w-1/4 mx-4 rounded-md shadow-md bg-white p-2 flex items-center">
-            <div className="w-12 h-12 shadow-md bg-teal-800 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 shadow-md bg-secondary rounded-full flex items-center justify-center">
               <MdOutlineHouse className='h-8 w-8 text-gray-100' />
             </div>
             <div className="ml-2">
@@ -56,28 +56,27 @@ const AllExpenses = () => {
       </div>
 
       <div className="w-full rounded-md max-w-5xl mx-auto bg-white shadow-lg border border-zinc-100 mt-4">
-        <div className={`fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50 ${isFormVisible ? 'visible' : 'hidden'}`}>
+        <div className={`fixed inset-0 flex items-center justify-center z-50 bg-primary bg-opacity-50 ${isFormVisible ? 'visible' : 'hidden'}`}>
           {isFormVisible && !editExpense ? <AddExpenseForm onClose={() => setIsFormVisible(false)} /> : null}
-          {isFormVisible && editExpense ? <EditExpenseForm expense={editExpense} expenseId={editExpense._id}  onClose={() => setIsFormVisible(false)} /> : null}
-
-
+          {isFormVisible && editExpense ? <EditExpenseForm expense={editExpense} expenseId={editExpense._id} onClose={() => setIsFormVisible(false)} /> : null}
         </div>
         
         <header className="px-5 py-4 border-b border-zinc-100">
           <div className="flex justify-between items-center">
-            <h2 className="font-semibold text-zinc-900">Expenses</h2>
+            <h2 className="font-semibold text-primary">Expenses</h2>
             <button
-              onClick={() => setIsFormVisible(!isFormVisible)}
-              className="px-4 py-1 rounded-md bg-orange-300 text-white hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+              onClick={handleAddExpense} 
+              className="px-4 py-1 rounded-md bg-accent text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
             >
               <MdOutlineAdd />
             </button>
-            </div>
+          </div>
         </header>
+        
         <div className="p-3">
           <div className="overflow-x-auto">
             <table className="table-auto w-full">
-              <thead className="text-xs font-semibold uppercase text-teal-800 ">
+              <thead className="text-xs font-semibold uppercase text-secondary ">
                 <tr>
                   <th className="p-2 whitespace-nowrap">
                     <div className="font-semibold text-left">Expense</div>
@@ -95,28 +94,37 @@ const AllExpenses = () => {
                   <th className="p-2 whitespace-nowrap">
                     <div className="font-semibold text-center">Edit</div>
                   </th>
+                  <th className="p-2 whitespace-nowrap">
+                    <div className="font-semibold text-center">Delete</div>
+                  </th>
                 </tr>
               </thead>
               <tbody className="text-sm divide-y divide-zinc-100">
               {currentItems.map((expense) => (
-                <tr key={expense._id}>
-                  <td className="p-2 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 shadow-md bg-teal-800 rounded-full flex items-center justify-center"><MdOutlineHouse className='h-6 w-6 text-gray-100' /></div>
-                      <div className="font-medium text-zinc-900 ml-2">{expense.description}</div>
-                    </div>
-                  </td>
-                  <td className="p-2 whitespace-nowrap">{expense.category}</td>
-                  <td className="p-2 whitespace-nowrap">{expense.date ? expense.date.split('T')[0] : ''}</td>
-                  <td className="p-2 whitespace-nowrap">
-                    <div className="text-center font-medium text-orange-300">${expense.amount}</div>
-                  </td>
-                  <td className="p-2 whitespace-nowrap flex items-center justify-center">
-                    <button onClick={() => handleEditExpense(expense)}>
-                      <CiEdit className='w-6 h-6 text-teal-800' />
-                    </button>
-                  </td>
-                </tr>
+               <tr key={expense._id}>
+               <td className="p-2 whitespace-nowrap">
+                   <div className="flex items-center">
+                       <div className="w-10 h-10 shadow-md bg-teal-800 rounded-full flex items-center justify-center"><MdOutlineHouse className='h-6 w-6 text-gray-100' /></div>
+                       <div className="font-medium text-zinc-900 ml-2">{expense.description}</div>
+                   </div>
+               </td>
+               <td className="p-2 whitespace-nowrap">{expense.category}</td>
+               <td className="p-2 whitespace-nowrap">{expense.date ? expense.date.split('T')[0] : ''}</td>
+               <td className="p-2 whitespace-nowrap">
+                   <div className="text-center font-medium text-secondary">${expense.amount}</div>
+               </td>
+               <td className="p-2 whitespace-nowrap flex justify-center">
+                   <button onClick={() => handleEditExpense(expense)} className="flex justify-center items-center">
+                       <MdOutlineEdit className='w-6 h-6 text-accent' />
+                   </button>
+               </td>
+               <td className="p-2 whitespace-nowrap" style={{ textAlign: 'center' }}>
+                  <button onClick={() => handleEditExpense(expense)}>
+                      <MdOutlineDeleteOutline className='w-6 h-6 text-red-500' />
+                  </button>
+              </td>
+           </tr>
+           
               ))}
             </tbody>
             </table>

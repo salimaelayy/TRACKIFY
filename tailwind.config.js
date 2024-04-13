@@ -5,6 +5,9 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    fontFamily: {
+      'sans': ['Roboto', 'Montserrat', 'sans-serif'],
+    },
     extend: {
       colors: {
         'primary': '#00171f ',
@@ -16,6 +19,6 @@ export default {
     },
   },
   plugins: [
-    require('tailwind-scrollbar')
-  ],
+    require('tailwind-scrollbar'),
+  ]
 }

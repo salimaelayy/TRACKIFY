@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addUserAsync } from '../redux/slices/userSlice/userThunk';
 import { useNavigate } from 'react-router-dom';
+import logo_light from '../assets/Trackify-Logo.png'
 import InputLabel from './InputLabels';
 import { useCookies } from 'react-cookie';
-import Button from './Buttons';
+import ButtonAccent from '../pages/ButtonAccent';
 
 function Register() {
     const dispatch = useDispatch();
@@ -33,11 +34,13 @@ function Register() {
     };
 
     return (
-        <div className="max-h-screen overflow-hidden min-h-screen flex items-center justify-center bg-white">
-            <div className="max-w-md w-full bg-white p-8 shadow-lg rounded-lg">
-                <h1 className='text-4xl font-black text-center p-3'>Sign Up</h1>
-                <div className="text-center mb-2">
-                    <h2 className='text-2xl font-black'>Trackify</h2>
+        <div className="max-h-screen overflow-hidden min-h-screen flex items-center justify-center bg-background">
+            <div className="max-w-md w-full bg-white px-8 shadow-lg rounded-lg">
+                <div className="align-middle ">
+                    <div className=" flex justify-center ">
+                        <img src={logo_light} alt="" className='w-40 block'/>
+                    </div>
+                    <h1 className='text-xl font-black text-center '>Sign Up</h1>
                 </div>
                 <form onSubmit={handleSubmit}>
                     <InputLabel type="text" label="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
@@ -46,7 +49,7 @@ function Register() {
                     <InputLabel type="text" label="Country" value={country} onChange={(e) => setCountry(e.target.value)} />
                     <InputLabel type="text" label="Full Name" value={fullname} onChange={(e) => setFullname(e.target.value)} />
                     <InputLabel type="date" label="Birthdate" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} />
-                    <Button classname="w-full bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" buttontext="Sign Up" />
+                    <ButtonAccent buttontext="Sign Up" classname={'w-full bg-accent py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-300'}/>
                 </form>
             </div>
         </div>

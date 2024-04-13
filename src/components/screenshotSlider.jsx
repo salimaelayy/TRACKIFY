@@ -34,10 +34,10 @@ const ScreenshotSlider = () => {
     };
 
     return (
-        <><div className=' text-center my-8'>
+        <><div className='bg-secondary  text-background text-center py-10'>
             <h1 className='font-bold text-5xl py-4' >Screenshots</h1>
         <h3 className='font-normal text-xl'>Browse through the major features of Money Manager.</h3>
-        <Slider {...settings} className="mx-auto max-w-6xl">
+        <Slider {...settings} className="mx-auto max-w-6xl ">
             <div className="p-4">
                 <img src={mockup1} alt="Screenshot 1" className="rounded-lg "/>
             </div>

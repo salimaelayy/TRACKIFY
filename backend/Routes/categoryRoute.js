@@ -1,20 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const categoryController = require('../controllers/categoryController');
+const {validateToken} =require('../MiddleWares/ValidateToken')
 
 // Create a new category
-router.post('/', categoryController.createCategory);
+router.post('/', validateToken,categoryController.createCategory);
 
 // Get all categories
-router.get('/', categoryController.getCategories);
+router.get('/', validateToken,categoryController.getCategories);
 
 // Get category by ID
-router.get('/:id', categoryController.getCategoryById);
+router.get('/:id', validateToken,categoryController.getCategoryById);
 
 // Update category
-router.put('/:id', categoryController.updateCategory);
+router.put('/:id', validateToken,categoryController.updateCategory);
 
 // Delete category
-router.delete('/:id', categoryController.deleteCategory);
+router.delete('/:id', validateToken,categoryController.deleteCategory);
 
 module.exports = router;

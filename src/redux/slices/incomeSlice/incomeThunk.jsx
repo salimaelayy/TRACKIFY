@@ -25,17 +25,16 @@ export const addIncomeAsync = createAsyncThunk(
 );
 
 export const getIncomesAsync = createAsyncThunk(
-  'income/getIncome',
-  async () => {
-    try {
-      const response = await axios.get(`http://localhost:3008/api/income/${id}`);
-      return response.data;
-    } catch (error) {
-      throw error.response.data.message;
+    'income/getIncomes',
+    async ({ id }, { rejectWithValue }) => {
+      try {
+        const response = await incomeService.getIncomeById(id); // Assuming incomeService.getIncomeById returns a Promise
+        return response.data; // Assuming the API response contains the income data directly
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
     }
-  }
-);  
-
+  );
 export const editIncomeAsync = createAsyncThunk(
   'income/editIncome',
   async ({ id, ...incomeData }) => {

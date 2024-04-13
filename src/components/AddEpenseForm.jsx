@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { MdOutlineAdd, MdOutlineClose, MdOutlineRemove } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
 import { addexpenseAsync } from '../redux/slices/expenseSlice/expenseThunk';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddExpenseForm = ({ onClose })=> {
   const dispatch = useDispatch();
@@ -28,8 +30,10 @@ const AddExpenseForm = ({ onClose })=> {
       setDescription('');
       setDate('');
       onClose();
+      toast.success('Expense added successfully!');
     } catch (error) {
       console.error('Failed to add expense:', error);
+      toast.error('Failed to add expense');
     }
   };
   return (
