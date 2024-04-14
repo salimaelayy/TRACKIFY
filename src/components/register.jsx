@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addUserAsync } from '../redux/slices/userSlice/userThunk';
 import { useNavigate } from 'react-router-dom';
 import logo_light from '../assets/Trackify-Logo.png'
@@ -10,6 +10,7 @@ import ButtonAccent from '../pages/ButtonAccent';
 function Register() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const error = useSelector((state) => state.user?.error.response.data.message);
     const [cookies, setCookie] = useCookies(['access-token']);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -49,7 +50,12 @@ function Register() {
                     <InputLabel type="text" label="Country" value={country} onChange={(e) => setCountry(e.target.value)} />
                     <InputLabel type="text" label="Full Name" value={fullname} onChange={(e) => setFullname(e.target.value)} />
                     <InputLabel type="date" label="Birthdate" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} />
-                    <ButtonAccent buttontext="Sign Up" classname={'w-full bg-accent py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-300'}/>
+                    <button
+                        type="submit"
+                        className="w-full justify-center bg-accent py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-secondary hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-300"
+                    >Sign Up
+                    </button>
+                    
                 </form>
             </div>
         </div>

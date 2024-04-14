@@ -13,8 +13,10 @@ import AllTransaction from './components/AllTransaction.jsx';
 import NotFoundPage from './pages/Notfound.jsx';
 import SettingsTabs from './components/SettingsTabs.jsx';
 import { AuthProvider } from './components/AuthProvider.jsx';
-import PrivateRoute from './components/PrivateRoute.jsx'; 
+import PrivateRoute from './components/PrivateRoute.jsx';
+import axios from 'axios';
 
+axios.defaults.withCredentials = true;
 function App() {
   return (
     <AuthProvider>

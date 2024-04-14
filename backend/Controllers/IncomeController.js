@@ -3,7 +3,7 @@ const Category= require("../Schemas/Category")
 
 const createIncome = async (req, res) => {
   try {
-    const { amount, date, description,account, categoryId } = req.body;
+    const { amount, date, description,account, categoryId,createdBy } = req.body;
     if (!categoryId) {
       return res.status(400).json({ msg: 'Category ID is required' });
     }
@@ -20,6 +20,7 @@ const createIncome = async (req, res) => {
       description,
       account,
       category: category._id,
+      createdBy
     });
 
     await income.save();

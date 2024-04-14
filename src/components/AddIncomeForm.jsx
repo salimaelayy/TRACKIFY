@@ -3,6 +3,8 @@ import { MdOutlineAdd, MdOutlineClose } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { addIncomeAsync } from '../redux/slices/incomeSlice/incomeThunk';
+import { useAuth } from './AuthProvider';
+import { fetchexpensesAsync } from '../redux/slices/expenseSlice/expenseThunk';
 
 const AddIncomeForm = ({onClose}) => {
   
@@ -12,6 +14,7 @@ const AddIncomeForm = ({onClose}) => {
   const [account, setAccount] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
+  const { userId } = useAuth();
 
 
   const handleSubmit = (e) => {
@@ -22,9 +25,10 @@ const AddIncomeForm = ({onClose}) => {
       return;
     }
     // Add categoryId to the expense object
-    const incomeData = { amount, date, description, categoryId: category, account };
+    const incomeData = { amount, date, description, categoryId: category, account,createdBy:userId };
     try {
       dispatch(addIncomeAsync(incomeData));
+      dispatch(fetchexpensesAsync());
       toast.success('Income added successfully');
       setAmount('');
       setCategory('');

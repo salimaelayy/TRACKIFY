@@ -1,18 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdMoreVert } from "react-icons/md";
 import { Link } from 'react-router-dom';
 import logo from '../assets/Trackify-dark.png'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthProvider';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserAsync } from '../redux/slices/userSlice/userThunk';
 
 const Sidebar = () => {
-  const { logout } = useAuth();
+  const { logout, userId  } = useAuth();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDatadispatch =  await dispatch(getUserAsync({ id: userId }));
+        const {user} = userDatadispatch.payload;
+        setUsername(user.username);
+        console.log(user.username)
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
+    };
+
+    if (userId) {
+      fetchUserData();
+    }
+  }, [userId]);
+
+  
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
+  
   return (
     
     <div className="w-64 h-screen px-7 justify-center  bg-teal-800 flex-col ">
@@ -61,7 +85,7 @@ const Sidebar = () => {
             <img className="w-8 h-8 rounded-full" src="https://via.placeholder.com/32x32" /> 
             <Link to="settings">
             <div className="flex-col justify-start items-start inline-flex">
-              <div className="w-30 text-amber-50 text-base font-normal font-['Inter'] leading-normal">Tanzir Rahman</div>
+              <div className="w-30 text-amber-50 text-base font-normal font-['Inter'] leading-normal">{username}</div>
               <div className="text-white text-opacity-70 text-xs font-normal font-['Inter'] leading-none">View profile</div>
             </div> 
             </Link>

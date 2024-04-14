@@ -3,13 +3,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import ImageUpload from './UploadImage';
 import Profile from "../assets/profile.jpg"
 import ReactLoading from 'react-loading';
-import { jwtDecode } from "jwt-decode";
 import { getUserAsync,  } from '../redux/slices/userSlice/userThunk';
 import axios from 'axios';
+import { useAuth } from './AuthProvider';
 
 const ProfileSettings = () => {
     const dispatch = useDispatch();
-    const userId = '660ac6c330b6e0b38c6be7bc';
+    const { userId } = useAuth()
+    // const userId = '660ac6c330b6e0b38c6be7bc';
     const { users, loading, error, image } = useSelector((state) => state.users);
     // const user=users.user;
     const [editMode, setEditMode] = useState(false);
@@ -27,9 +28,10 @@ const ProfileSettings = () => {
     const formattedBirthdate = editUserData.birthdate ? new Date(editUserData.birthdate).toISOString().split('T')[0] : '';
 
     useEffect(() => {
-        dispatch(getUserAsync({ id: getUserIdFromToken() }));
-    }, [dispatch]);
-    
+        if (userId) {
+            dispatch(getUserAsync({ id: userId }));
+        }
+    }, [dispatch, userId]);
     useEffect(() => {
         if (users && users.user) {
             setEditUserData({
@@ -58,9 +60,8 @@ const ProfileSettings = () => {
         formData.append("fullname",editUserData.fullname)
         formData.append("birthdate",editUserData.birthdate)
 
-        await axios.put(`http://localhost:3008/api/user/${  getUserIdFromToken()}`, formData); 
+        await axios.put(`http://localhost:3008/api/user/${userId}`, formData); 
                setEditMode(false);
-
         setEditUserData({
             username: users.user.username || '',
             fullname: users.user.fullname || '',
@@ -70,24 +71,10 @@ const ProfileSettings = () => {
             country: users.user.country || '',
             picture:users.user.picture || Profile
         });
-        dispatch(getUserAsync({ id: getUserIdFromToken() }));
+        dispatch(getUserAsync({ id: userId}));
         
     };
-    
-    const getUserIdFromToken = () => {
-        const token = getCookie('access-token');
-        if (token) {
-            const decodedToken = jwtDecode(token);
-            return decodedToken.userId;
-        }
-        return null;
-    };
 
-    const getCookie = (name) => {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-    };
     const handleImageChange = (image) => {
         console.log(image)
         setEditUserData({
@@ -115,11 +102,12 @@ const ProfileSettings = () => {
     return (
         <div className='py-5'>
             <div className="flex"> 
-                {editMode ? (
-                    <ImageUpload onEditClick={handleEditClick} onImageChange={handleImageChange} />
+            {editMode ? (
+                <ImageUpload onImageChange={handleImageChange} />
                     ) : (
-                    <img className="w-52 h-52 rounded-full border-8 border-accent" src={editUserData.picture} alt="" />
-                )}
+                        <img className="w-52 h-52 rounded-full border-8 border-accent" src={editUserData.picture} alt="" />
+                    )}
+
                 <div className="w-full p-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="col-span-1">

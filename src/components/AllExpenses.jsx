@@ -4,12 +4,14 @@ import { MdOutlineEdit, MdOutlineHouse ,MdOutlineAdd, MdOutlineDeleteOutline} fr
 import { Link } from 'react-router-dom';
 import AddExpenseForm from './AddEpenseForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchexpensesAsync } from '../redux/slices/expenseSlice/expenseThunk';
+import { deleteexpenseAsync, fetchexpensesAsync } from '../redux/slices/expenseSlice/expenseThunk';
 import EditExpenseForm from './editExpenseForm';
+import { useAuth } from './AuthProvider';
 
 const AllExpenses = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
+  const { userId } = useAuth();
   const dispatch = useDispatch();
   const { expenses, loading, error } = useSelector((state) => state.expenses);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -17,7 +19,9 @@ const AllExpenses = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = expenses.slice(indexOfFirstItem, indexOfLastItem);
+  // const currentItems = expenses.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = expenses.filter(income => income.createdBy === userId).slice(indexOfFirstItem, indexOfLastItem);
+  
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -33,8 +37,20 @@ const AllExpenses = () => {
   };
 
   const handleAddExpense = () => {
-    setEditExpense(null); // Reset editExpense state
+    setEditExpense(null); 
     setIsFormVisible(true);
+    dispatch(fetchexpensesAsync());
+  };
+
+  const handleDeleteExpense = (expenseId) => {
+    dispatch(deleteexpenseAsync(expenseId))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchexpensesAsync());
+      })
+      .catch((error) => {
+        console.error('Error deleting expense:', error);
+      });
   };
 
   return (
@@ -53,6 +69,16 @@ const AllExpenses = () => {
             </div>
           </div>
         ))}
+        <div className="w-1/4 mx-4 rounded-md shadow-md bg-white p-2 flex items-center">
+            <div className="w-12 h-12 shadow-md bg-secondary rounded-full flex items-center justify-center">
+              <MdOutlineHouse className='h-8 w-8 text-gray-100' />
+            </div>
+            <div className="ml-2">
+              <div className="text-teal-800 text-lg font-bold">Rent</div>
+              <div className="text-gray-500 text-sm">Housing</div>
+              <div className="text-gray-800 text-base font-semibold">$50,000</div>
+            </div>
+          </div>
       </div>
 
       <div className="w-full rounded-md max-w-5xl mx-auto bg-white shadow-lg border border-zinc-100 mt-4">
@@ -119,7 +145,7 @@ const AllExpenses = () => {
                    </button>
                </td>
                <td className="p-2 whitespace-nowrap" style={{ textAlign: 'center' }}>
-                  <button onClick={() => handleEditExpense(expense)}>
+                  <button onClick={() => handleDeleteExpense(expense._id)}>
                       <MdOutlineDeleteOutline className='w-6 h-6 text-red-500' />
                   </button>
               </td>
@@ -136,7 +162,7 @@ const AllExpenses = () => {
               disabled={currentPage === 1}>
           &lt;
         </button>
-        {Array.from(Array(Math.ceil(expenses.length / itemsPerPage)).keys()).map((pageNumber) => (
+        {Array.from(Array(Math.ceil(expenses.filter(income => income.createdBy === userId).length / itemsPerPage)).keys()).map((pageNumber) => (
             <button
               key={`page-${pageNumber + 1}`}
               className={`px-1 py-1 mx-1 rounded-md bg-teal-800 text-white text-xs hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50${currentPage === pageNumber + 1 ? 'bg-gold' : ''}`}

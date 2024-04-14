@@ -10,12 +10,12 @@ const expenseRoutes = require('./Routes/expenseRoute');
 const incomeRoutes = require('./Routes/incomeRoute');
 const categoryRoutes = require('./Routes/categoryRoute');
 
-// const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 require('dotenv').config()
 app.use(express.json())
 app.use(cookieParser()) 
-app.use(cors("*"));
+app.use(cors({credentials :true, origin :'http://localhost:5173'}));
+// app.use(cors("*"));
 
 app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);

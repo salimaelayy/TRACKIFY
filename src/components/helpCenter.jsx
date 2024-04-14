@@ -10,7 +10,7 @@ function HelpCenter() {
     };
 
     return (
-        <div className='bg-background py-8'><div className="container  mx-auto px-4 sm:px-8 max-w-3xl">
+        <div className='bg-background py-8'><div className="container  mx-auto px-4 sm:px-8 ">
             <div className="main-title ">
                 <h1 className="font-bold text-2xl my-6 text-center">How can we help you?</h1>
             </div>

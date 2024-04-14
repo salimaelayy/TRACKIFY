@@ -4,14 +4,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addexpenseAsync } from '../redux/slices/expenseSlice/expenseThunk';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from './AuthProvider';
 
 const AddExpenseForm = ({ onClose })=> {
   const dispatch = useDispatch();
+  const { userId } = useAuth();
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
   const [account, setAccount] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
+  const createdBy = userId;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -21,7 +24,7 @@ const AddExpenseForm = ({ onClose })=> {
       return;
     }
     // Add categoryId to the expense object
-    const expenseData = { amount, date, description, categoryId: category, account };
+    const expenseData = { amount, date, description, categoryId: category, account, createdBy: userId };
     try {
       dispatch(addexpenseAsync(expenseData));
       setAmount('');

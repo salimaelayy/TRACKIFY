@@ -3,13 +3,15 @@ import { MdOutlineAdd, MdOutlineDeleteOutline, MdOutlineEdit, MdOutlineHouse } f
 import { Link } from 'react-router-dom';
 import { CiEdit } from "react-icons/ci";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchIncomesAsync } from '../redux/slices/incomeSlice/incomeThunk';
+import { deleteIncomeAsync, fetchIncomesAsync } from '../redux/slices/incomeSlice/incomeThunk';
 import AddIncomeForm from './AddIncomeForm';
 import EditIncomeForm from './editIncomeForm'; 
+import { useAuth } from './AuthProvider';
 
 const AllIncomes = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const { userId } = useAuth();
   const dispatch = useDispatch();
   const { incomes, loading, error } = useSelector((state) => state.incomes);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -17,7 +19,9 @@ const AllIncomes = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = incomes.slice(indexOfFirstItem, indexOfLastItem);
+  // const currentItems = incomes.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = incomes.filter(income => income.createdBy === userId).slice(indexOfFirstItem, indexOfLastItem);
+  
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -27,16 +31,28 @@ const AllIncomes = () => {
     dispatch(fetchIncomesAsync());
   }, []);
 
-  const handleEditIncome = (income) => {
-    console.log('Editing income:', income);
-    setEditIncome(income);
-    setIsFormVisible(true);
-  };
+
 
   const handleAddIncome = () => {
     setEditIncome(null); 
     setIsFormVisible(true);
   };
+    const handleEditIncome = (income) => {
+    console.log('Editing income:', income);
+    setEditIncome(income);
+    setIsFormVisible(true);
+  };
+  const handleDeleteIncome = (expenseId) => {
+    dispatch(deleteIncomeAsync(expenseId))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchIncomesAsync());
+      })
+      .catch((error) => {
+        console.error('Error deleting expense:', error);
+      });
+  };
+
 
   return (
     <div className="flex flex-col justify-center h-full relative">
@@ -103,10 +119,10 @@ const AllIncomes = () => {
                       </button>
                     </td>
                     <td className="p-2 whitespace-nowrap" style={{ textAlign: 'center' }}>
-                      <button onClick={() => handleEditExpense(expense)}>
-                          <MdOutlineDeleteOutline className='w-6 h-6 text-red-500' />
+                      <button onClick={() => handleDeleteIncome (income._id)}>
+                        <MdOutlineDeleteOutline className='w-6 h-6 text-red-500' />
                       </button>
-                  </td>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -119,7 +135,7 @@ const AllIncomes = () => {
                 disabled={currentPage === 1}>
           &lt;
         </button>
-        {Array.from(Array(Math.ceil(incomes.length / itemsPerPage)).keys()).map((pageNumber) => (
+        {Array.from(Array(Math.ceil(incomes.filter(income => income.createdBy === userId).length / itemsPerPage)).keys()).map((pageNumber) => (
           <button
             key={`page-${pageNumber + 1}`}
             className={`px-1 py-1 mx-1 rounded-md bg-teal-800 text-white text-xs hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50${currentPage === pageNumber + 1 ? 'bg-gold' : ''}`}

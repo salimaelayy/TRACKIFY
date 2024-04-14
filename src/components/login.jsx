@@ -18,13 +18,15 @@ function LoginPage() {
     const [cookies, setCookie] = useCookies(['access-token']);
     const isAuthenticated = !!cookies['access-token'];
 
+
+    
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(loginAsync({ username, password }))
             .unwrap()
             .then((data) => {
                 if (data && data.accessToken) {
-                    setCookie('access-token', data.accessToken, { maxAge: 3600, path: '/' });
+                    setCookie('access-token', data.accessToken, { maxAge: 1000000, path: '/' });
                     navigate('/dashboard');
                 }
             });
@@ -39,7 +41,7 @@ useEffect(() => {
         <div className="min-h-screen flex items-center justify-center bg-background">
             <div className="max-w-md w-full bg-white p-8 shadow-lg rounded-lg">
                 <div className="text-center flex items justify-center ">
-                    <img src={logo} alt="Logo" className="w-44" />
+                    <img src={logo} alt="Logo" className="w-48" />
                 </div>
                 <div className="text-center  items justify-center mb-2">
                     <h1 className='text-2xl font-black '>Login</h1>

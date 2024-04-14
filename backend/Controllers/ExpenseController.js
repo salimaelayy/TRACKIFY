@@ -7,7 +7,7 @@ const Category = require('../Schemas/Category');
 const createExpense = async (req, res) => {
   try {
     // const userId =req.params._id
-    const { amount, date, description, account, categoryId} = req.body;
+    const { amount, date, description, account, categoryId, createdBy} = req.body;
 
     // Check if categoryId is provided
     if (!categoryId) {
@@ -29,7 +29,7 @@ const createExpense = async (req, res) => {
       account,
       description,
       category: category._id,
-      // createdBy:user._id
+      createdBy
     });
 
     await expense.save();

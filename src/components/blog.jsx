@@ -3,7 +3,7 @@ import React from 'react'
 const Blog = () => {
   return (
     <div>
-        <section className="bg-primary py-16 h-screen flex items-center">
+        <section className="bg-secondary py-16 h-screen flex items-center">
             <div className="container mx-auto px-8">
             {/* Blog posts */}
             <h2 className="text-3xl text-background font-bold mb-8 text-center">Latest Blog Posts</h2>

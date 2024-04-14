@@ -3,7 +3,7 @@ import Testimonial_cards from './Testimonial_cards'
 
 const Testimonials = () => {
   return (
-    <section className="bg-primary py-20">
+    <section className="bg-secondary py-20">
             <div className="container mx-auto px-4">
                 <h2 className="text-3xl font-bold text-background text-center mb-10">What people are saying</h2>
                 <div className="flex flex-wrap -mx-4">
