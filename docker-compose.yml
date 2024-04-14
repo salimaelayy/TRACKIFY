@@ -1,0 +1,14 @@
+
+version: '3'
+services:
+    react-app:
+        image : react-app
+        container_name: trackify_client_
+        ports:
+            - '5173:5173'
+
+    express-server:
+        image : express-server 
+        container_name: trackify_server_
+        ports:
+            - '30088:30088'
