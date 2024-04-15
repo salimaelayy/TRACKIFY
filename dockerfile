@@ -8,9 +8,7 @@ RUN npm install
 
 COPY . . 
 
-RUN npm run dev:front
-
-EXPOSE 5137
+EXPOSE 5173
 
 CMD ["npm", "run", "dev:front"]
 

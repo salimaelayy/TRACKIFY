@@ -26,12 +26,12 @@ function LoginPage() {
             .unwrap()
             .then((data) => {
                 if (data && data.accessToken) {
-                    setCookie('access-token', data.accessToken, { maxAge: 1000000, path: '/' });
+                    setCookie('access-token', data.accessToken, { maxAge: 2 * 60 * 60 , path: '/' });
                     navigate('/dashboard');
                 }
             });
     };
-useEffect(() => {
+    useEffect(() => {
     if (isAuthenticated) {
         navigate('/dashboard');
     }

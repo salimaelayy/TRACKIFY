@@ -18,11 +18,10 @@ export const AuthProvider = ({ children }) => {
     const decodeToken = () => {
       if (cookies['access-token']) {
         const decodedToken = jwtDecode(cookies['access-token']);
-        const expirationDate = new Date(decodedToken.exp * 1000); // Convert to milliseconds
+        const expirationDate = new Date(decodedToken.exp * 10000); 
         const currentDate = new Date();
 
         if (currentDate > expirationDate) {
-          // Token is expired
           logout();
           return;
         }

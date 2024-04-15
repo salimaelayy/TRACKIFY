@@ -8,9 +8,7 @@ RUN npm install
 
 COPY . . 
 
-RUN npm run dev:back
-
 EXPOSE 3008
 
-CMD ["npm", "run", "dev:front"]
+CMD ["npm", "run", "dev:back"]
 

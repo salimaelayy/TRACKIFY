@@ -2,9 +2,10 @@ import React from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import mockup1 from "../assets/mockup1.png"
-import mockup2 from "../assets/mockup2.png"
-import mockup3 from "../assets/mockup3.png"
+import mockup4 from "../assets/profile.jpg"
+import mockup1 from "../assets/expense_crud.jpg"
+import mockup2 from "../assets/overview_Dashboard.jpg"
+import mockup3 from "../assets/income.jpg"
 
 const ScreenshotSlider = () => {
     const settings = {
@@ -48,7 +49,7 @@ const ScreenshotSlider = () => {
                 <img src={mockup3} alt="Screenshot 3" className="rounded-lg "/>
             </div>
             <div className="p-4">
-                <img src={mockup2} alt="Screenshot 2" className="rounded-lg "/>
+                <img src={mockup4} alt="Screenshot 2" className="rounded-lg "/>
             </div>
         </Slider>
         </div>
