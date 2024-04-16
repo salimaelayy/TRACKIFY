@@ -32,7 +32,7 @@ const login = async (req, res, next) => {
     const accessToken = CreateToken(userLoggedIn);
 
     // Putting the token in a cookie
-    res.cookie("access-token", accessToken, { maxAge: 2000 * 60 * 60 , httpOnly: true,sameSite : 'lax',secure: false  });
+    res.cookie("access-token", accessToken, { maxAge: 2 * 60 * 60 , httpOnly: true,sameSite : 'lax',secure: false });
 
     // Send a success response
     return res.json({  id: userLoggedIn._id, accessToken });
