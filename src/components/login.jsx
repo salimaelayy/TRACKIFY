@@ -1,9 +1,10 @@
+// LoginPage.jsx
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginAsync } from '../redux/slices/authSlice/authThunk';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import { useAuth } from './AuthProvider';
 
 function LoginPage() {
     const dispatch = useDispatch();
@@ -12,7 +13,11 @@ function LoginPage() {
     const [password, setPassword] = useState('');
     const loading = useSelector((state) => state.auth?.loading);
     const error = useSelector((state) => state.auth?.error.response.data.message);
-    const [cookies, setCookie] = useCookies(['access-token']);
+    const { isAuthenticated } = useAuth();
+
+    if (isAuthenticated) {
+        navigate('/dashboard');
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -20,7 +25,7 @@ function LoginPage() {
             .unwrap()
             .then((data) => {
                 if (data && data.accessToken) {
-                    setCookie('access-token', data.accessToken, { maxAge: 3600, path: '/' });
+                    document.cookie = `access-token=${data.accessToken}; max-age=${60 * 60 * 1}; path=/`;
                     navigate('/dashboard');
                 }
             });

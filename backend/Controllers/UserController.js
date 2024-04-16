@@ -42,7 +42,7 @@ const register = async (req, res, next) => {
 
     const accessToken = CreateToken(newUser);
 
-    res.cookie("access-token", accessToken, { maxAge: 90000, httpOnly: true });
+    res.cookie("access-token", accessToken, { maxAge: 2 * 60 * 60 , httpOnly: true });
 
     return res.status(201).json({
       accessToken,
