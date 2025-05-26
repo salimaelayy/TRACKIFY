@@ -31,11 +31,7 @@ function LoginPage() {
                 }
             });
     };
-    useEffect(() => {
-    if (isAuthenticated) {
-        navigate('/dashboard');
-    }
-}, [isAuthenticated, navigate]);
+   
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-background">
