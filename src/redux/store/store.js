@@ -8,7 +8,7 @@ import {currencyReducer} from "../slices/currencySlice/currencySlice"
 import {countryReducer} from "../slices/countrySlice/countrySlice"
 const store = configureStore({
   reducer: {
-    authentifications: authReducer,
+    auth: authReducer,
     categories: categoryReducer,
     expenses: expenseReducer,
     incomes: incomeReducer,

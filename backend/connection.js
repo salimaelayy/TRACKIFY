@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
  * If the connection fails, it logs an error message to the console.
  */
 mongoose
-  .connect(process.env.URI)
+  .connect(process.env.MONGO_URI)
   .then(() => {
     // Connection to the database was successful, log a success message
     console.log('Connected to the database')

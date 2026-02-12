@@ -146,8 +146,12 @@ const changePassword = async (req, res, next) => {
     console.log(user.password)
     console.log(oldPassword)
     // Verify the old password
+    console.log('oldPassword from request:', oldPassword);
+console.log('user password from DB:', user.password);
+
     const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
     if (!isPasswordCorrect) {
+    
       console.error('Incorrect old password');
       return res.status(401).json({ message: "Incorrect old password" });
     }

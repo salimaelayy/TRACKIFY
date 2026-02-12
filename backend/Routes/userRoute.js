@@ -13,7 +13,7 @@ router.get("/:id", validateToken, userController.readbyid);
 
 router.get("/name/:username", validateToken, userController.readbyname);
 
-router.put("/newpassword/:id", validateToken, userController.changePassword);
+router.put("/newpassword/:id", userController.changePassword);
 
 router.put("/:id", upload.single("image"), validateToken, userController.updatebyid);
 
