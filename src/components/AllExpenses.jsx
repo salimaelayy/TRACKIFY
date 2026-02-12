@@ -20,7 +20,7 @@ const AllExpenses = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   // const currentItems = expenses.slice(indexOfFirstItem, indexOfLastItem);
-  const currentItems = expenses.filter(income => income.createdBy === userId).slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = expenses.filter(expences => expences.createdBy === userId).slice(indexOfFirstItem, indexOfLastItem);
   
 
   const handlePageChange = (pageNumber) => {
@@ -28,8 +28,13 @@ const AllExpenses = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchexpensesAsync());
-  }, []);
+  dispatch(fetchexpensesAsync());
+}, []);
+
+  useEffect(() => {
+  console.log(expenses);
+  }, [expenses]);
+
 
   const handleEditExpense = (expense) => {
     setEditExpense(expense);
@@ -126,33 +131,35 @@ const AllExpenses = () => {
                 </tr>
               </thead>
               <tbody className="text-sm divide-y divide-zinc-100">
-              {currentItems.map((expense) => (
-               <tr key={expense._id}>
-               <td className="p-2 whitespace-nowrap">
-                   <div className="flex items-center">
-                       <div className="w-10 h-10 shadow-md bg-teal-800 rounded-full flex items-center justify-center"><MdOutlineHouse className='h-6 w-6 text-gray-100' /></div>
-                       <div className="font-medium text-zinc-900 ml-2">{expense.description}</div>
-                   </div>
-               </td>
-               <td className="p-2 whitespace-nowrap">{expense.category}</td>
-               <td className="p-2 whitespace-nowrap">{expense.date ? expense.date.split('T')[0] : ''}</td>
-               <td className="p-2 whitespace-nowrap">
-                   <div className="text-center font-medium text-secondary">${expense.amount}</div>
-               </td>
-               <td className="p-2 whitespace-nowrap flex justify-center">
-                   <button onClick={() => handleEditExpense(expense)} className="flex justify-center items-center">
-                       <MdOutlineEdit className='w-6 h-6 text-accent' />
-                   </button>
-               </td>
-               <td className="p-2 whitespace-nowrap" style={{ textAlign: 'center' }}>
-                  <button onClick={() => handleDeleteExpense(expense._id)}>
-                      <MdOutlineDeleteOutline className='w-6 h-6 text-red-500' />
-                  </button>
-              </td>
-           </tr>
-           
-              ))}
-            </tbody>
+                {currentItems.map((expense) => (
+                  <tr key={expense._id}>
+                    <td className="p-2 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 shadow-md bg-teal-800 rounded-full flex items-center justify-center">
+                          <MdOutlineHouse className='h-6 w-6 text-gray-100' />
+                        </div>
+                        <div className="font-medium text-zinc-900 ml-2">{expense.description}</div>
+                      </div>
+                    </td>
+                    <td className="p-2 whitespace-nowrap">{expense.category?.name || 'Uncategorized'}</td>
+                    <td className="p-2 whitespace-nowrap">{expense.date ? expense.date.split('T')[0] : ''}</td>
+                    <td className="p-2 whitespace-nowrap">
+                      <div className="text-center font-medium text-secondary">${expense.amount}</div>
+                    </td>
+                    <td className="p-2 whitespace-nowrap flex justify-center">
+                      <button onClick={() => handleEditExpense(expense)} className="flex justify-center items-center">
+                        <MdOutlineEdit className='w-6 h-6 text-accent' />
+                      </button>
+                    </td>
+                    <td className="p-2 whitespace-nowrap text-center">
+                      <button onClick={() => handleDeleteExpense(expense._id)}>
+                        <MdOutlineDeleteOutline className='w-6 h-6 text-red-500' />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+
             </table>
           </div>
         </div>

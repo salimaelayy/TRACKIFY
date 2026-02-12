@@ -5,33 +5,49 @@ import { jwtDecode } from 'jwt-decode';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [cookies, setCookie, removeCookie] = useCookies(['access-token']);
-  const isAuthenticated = !!cookies['access-token'];
+  const [cookies, , removeCookie] = useCookies(['access-token']);
   const [userId, setUserId] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const logout = () => {
     removeCookie('access-token');
     localStorage.removeItem('userInfo');
+    setUserId(null);
+    setIsAuthenticated(false);
   };
 
   useEffect(() => {
-    const decodeToken = () => {
-      if (cookies['access-token']) {
-        const decodedToken = jwtDecode(cookies['access-token']);
-        const expirationDate = new Date(decodedToken.exp * 10000); 
-        const currentDate = new Date();
+    if (!cookies['access-token']) {
+      setUserId(null);
+      setIsAuthenticated(false);
+      return;
+    }
 
-        if (currentDate > expirationDate) {
-          logout();
-          return;
-        }
+    try {
+      const decodedToken = jwtDecode(cookies['access-token']);
 
-        setUserId(decodedToken.id);
-        console.log(decodedToken.id);
+      // FIX 1 — correct expiration calculation
+      const expirationDate = new Date(decodedToken.exp * 1000);
+      const currentDate = new Date();
+
+      if (currentDate > expirationDate) {
+        logout();
+        return;
       }
-    };
 
-    decodeToken();
+      // FIX 2 — support both id and _id from backend
+      const extractedUserId = decodedToken.id || decodedToken._id || decodedToken.userId;
+
+      setUserId(extractedUserId);
+      setIsAuthenticated(true);
+
+      console.log("Decoded token:", decodedToken);
+      console.log("User ID:", extractedUserId);
+
+    } catch (error) {
+      console.error("Token decode failed:", error);
+      logout();
+    }
   }, [cookies]);
 
   return (

@@ -1,46 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginAsync } from '../redux/slices/authSlice/authThunk';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from './AuthProvider';
 import logo from '../assets/Trackify-white.png';
 import ButtonAccent from '../pages/ButtonAccent';
+import axios from 'axios';
 
 function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Redirect to dashboard if already authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      console.log("authenticated")
-      navigate('/dashboard', { replace: true });
-    }else{
-      console.log("unauthenticated")
-    }
-  }, [isAuthenticated, navigate]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleSubmit = async (e) => {
+  // Check login status on page load
+  useEffect(() => {
+    axios.get('http://localhost:3008/api/user/', { withCredentials: true })
+      .then(() => setIsAuthenticated(true))
+      .catch(() => setIsAuthenticated(false));
+  }, []);
+
+
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
 
-    try {
-      await dispatch(loginAsync({ username, password })).unwrap();
-      // After successful login, the cookie will be set and AuthProvider will update
-      // The useEffect above will handle the redirect
-      navigate('/dashboard', { replace: true });
-    } catch (err) {
-      setErrorMsg(err || 'Login failed');
-    } finally {
-      setLoading(false);
-    }
+    dispatch(loginAsync({ username, password }))
+      .unwrap()
+      .then(() => {
+        setIsAuthenticated(true);
+        navigate('/dashboard');
+      })
+      .catch((err) => {
+        setErrorMsg(err.response?.data?.message || 'Login failed');
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -60,7 +60,6 @@ function LoginPage() {
               name="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              required
               className="mt-1 p-2 h-10 block w-full border border-gray-300 rounded-md focus:ring-secondary focus:border-secondary sm:text-sm"
             />
           </div>
@@ -76,17 +75,16 @@ function LoginPage() {
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
               className="mt-1 p-2 block w-full h-10 border border-gray-300 rounded-md focus:ring-secondary focus:border-secondary sm:text-sm"
             />
           </div>
 
-          {errorMsg && <div className="text-red-500 mb-4 text-sm">{errorMsg}</div>}
+          {errorMsg && <div className="text-red-500 mb-4">{errorMsg}</div>}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full justify-center bg-accent py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-secondary hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full justify-center bg-accent py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-secondary hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-300"
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>

@@ -1,3 +1,4 @@
+// expenseSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchexpensesAsync, getexpenseAsync, addexpenseAsync, editExpenseAsync, deleteexpenseAsync } from '../expenseSlice/expenseThunk';
 
@@ -11,22 +12,24 @@ const initialState = {
 const expenseSlice = createSlice({
   name: 'expense',
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
+      // Fetch all expenses
       .addCase(fetchexpensesAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchexpensesAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.expenses = action.payload;
+        state.expenses = action.payload; // must be array
       })
       .addCase(fetchexpensesAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || action.error.message;
       })
+
+      // Get single expense
       .addCase(getexpenseAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -37,49 +40,51 @@ const expenseSlice = createSlice({
       })
       .addCase(getexpenseAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || action.error.message;
       })
+
+      // Add expense
       .addCase(addexpenseAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(addexpenseAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.currentExpense.push(action.payload);
+        state.expenses.push(action.payload); // fixed typo
       })
       .addCase(addexpenseAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || action.error.message;
       })
+
+      // Edit expense
       .addCase(editExpenseAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(editExpenseAsync.fulfilled, (state, action) => {
-        const editedExpense = action.payload;
         state.loading = false;
-        const index = state.expenses.findIndex((expense) => expense.id === editedExpense.id);
-        if (index !== -1) {
-          // Update the expense at the found index
-          state.expenses[index] = editedExpense;
-        }
+        const editedExpense = action.payload;
+        const index = state.expenses.findIndex(expense => expense._id === editedExpense._id);
+        if (index !== -1) state.expenses[index] = editedExpense;
       })
-      
       .addCase(editExpenseAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || action.error.message;
       })
+
+      // Delete expense
       .addCase(deleteexpenseAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(deleteexpenseAsync.fulfilled, (state, action) => {
-        state.expenses = state.expenses.filter((expense) => expense.id !== action.payload);
         state.loading = false;
+        state.expenses = state.expenses.filter(expense => expense._id !== action.payload);
       })
       .addCase(deleteexpenseAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || action.error.message;
       });
   },
 });
